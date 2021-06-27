@@ -9,6 +9,7 @@ import { ensureAdmin } from './middlewares/ensureAdmin'
 import { ensureAuthenticated } from './middlewares/ensureAuthenticated'
 import { ListTagController } from './controllers/ListTagsController'
 import { ListUsersController } from './controllers/ListUsersController'
+import { Validators } from './middlewares/validator'
 
 
 const createUserController = new CreateUserController()
@@ -19,14 +20,15 @@ const listUserSendComplimentsController = new ListUserSendComplimentsController(
 const listUserReceiveComplimentsController = new ListUserReceiveComplimentsController()
 const listTagController = new ListTagController()
 const listUserController = new ListUsersController()
+const validators = new Validators()
 
 const routes = Router()
-routes.post('/users', createUserController.handle)
+routes.post('/users', validators.createUser, createUserController.handle)
 routes.get('/users', listUserController.handle)
-routes.post('/login', authenticateUserController.handle)
+routes.post('/login', validators.login, authenticateUserController.handle)
 routes.get('/tags', listTagController.handle)
-routes.post('/tags', ensureAuthenticated, createTagController.handle)
-routes.post('/compliments', ensureAuthenticated, ensureAdmin, createComplimentController.handle)
+routes.post('/tags', validators.createTag, createTagController.handle)
+routes.post('/compliments', validators.createCompliment, ensureAuthenticated, ensureAdmin, createComplimentController.handle)
 routes.get('/users/compliments/send', ensureAuthenticated, listUserSendComplimentsController.handle)
 routes.get('/users/compliments/receive', ensureAuthenticated, listUserReceiveComplimentsController.handle)
 

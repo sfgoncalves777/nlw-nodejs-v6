@@ -3,7 +3,6 @@ import { TagsRepositories } from '../repositories/TagsRepositories'
 
 class CreateTagService {
   async execute(name : string) {
-    if (!name) throw new Error('Incorrect  name!')
     const tagRepository = getCustomRepository(TagsRepositories)
     const tagAlreadyExists = await tagRepository.findOne({ name })
     if (tagAlreadyExists) throw new Error('Tag already exists!')
